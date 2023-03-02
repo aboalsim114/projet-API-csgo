@@ -147,7 +147,8 @@ router.post('/', authenticateToken, (req, res, next) => {
     const skin = new skinModel({
         name: req.body.name,
         rarity: req.body.rarity,
-        image: req.body.image,
+        Team: req.body.Team,
+        Category: req.body.Category,
         prices: req.body.prices
     });
     skin.save()
@@ -157,7 +158,8 @@ router.post('/', authenticateToken, (req, res, next) => {
                 createdSkin: {
                     name: result.name,
                     rarity: result.rarity,
-                    image: result.image,
+                    Team: result.Team,
+                    Category: req.body.Category,
                     prices: result.prices
                 }
             });
@@ -166,6 +168,26 @@ router.post('/', authenticateToken, (req, res, next) => {
             next(error);
         });
 });
+
+
+
+
+router.get('/category/:category', authenticateToken, async(req, res) => {
+    try {
+        const skins = await skinModel.find({ category: req.params.category });
+        if (skins.length === 0) {
+            return res.status(404).json({
+                message: "Aucune skin trouvée pour cette catégorie"
+            });
+        }
+        res.status(200).json(skins);
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur lors de la récupération des skins"
+        });
+    }
+});
+
 
 
 
