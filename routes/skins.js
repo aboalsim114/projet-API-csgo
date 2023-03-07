@@ -3,41 +3,32 @@ const skinModel = require("../model/skinModel.js")
 const axios = require('axios');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const authenticateToken = require('./auth');
 
 
 
 
 
 
-// Middleware pour la validation du token
-function authenticateToken(req, res, next) {
-    // Récupère le token d'accès dans l'en-tête Authorization
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    // Vérifie si le token existe
-    if (token == null) return res.status(401).json({ message: 'Token non fourni' });
-
-    // Vérifie si le token est valide
-    jwt.verify(token, 'abc1234', (err, user) => {
-        if (err) return res.status(403).json({ message: 'Token invalide' });
-        req.user = user;
-        next();
-    });
-}
 
 
 // Route pour la génération de token
 router.post('/login', (req, res) => {
-    // Vérifie si l'utilisateur est autorisé à se connecter
-    if (req.body.username === 'user' && req.body.password === 'password') {
-        // Génère un token d'accès avec une durée de validité de 1 heure
+    // Validate input
+    if (!req.body.username || !req.body.password) {
+        return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    try {
+        // Generate access token with 1 hour expiration
         const token = jwt.sign({ username: req.body.username }, 'abc1234', { expiresIn: '1h' });
         res.json({ token: token });
-    } else {
-        res.status(401).json({ message: 'Identifiants invalides' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error generating token' });
     }
 });
+
 
 
 router.get("/", authenticateToken, async(req, res) => {
@@ -93,7 +84,7 @@ router.put('/:id', authenticateToken, async(req, res, next) => {
             req.params.id, {
                 name: req.body.name,
                 rarity: req.body.rarity,
-                image: req.body.image,
+                Team: req.body.Team,
                 prices: req.body.prices
             }, { new: true }
         );

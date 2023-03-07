@@ -16,8 +16,8 @@ app.use(bodyParser.json());
 const skinRoutes = require('./routes/skins');
 app.use('/api/skins', skinRoutes);
 
-
-
+const playerModel = require("./routes/players")
+app.use("/api/players", playerModel)
 
 
 app.get("/", (req, res) => {
@@ -25,4 +25,4 @@ app.get("/", (req, res) => {
 })
 
 
-app.listen(port, () => console.log(`connecter sur le port ${port}`))
+app.listen(port, () => console.log(`connecter sur :  http://localhost:${port}`))
