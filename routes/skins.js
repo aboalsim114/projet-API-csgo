@@ -75,6 +75,45 @@ router.get('/:name', authenticateToken, async(req, res) => {
 
 
 
+// get skins by rarity
+router.get('/rarity/:rarity', authenticateToken, async(req, res) => {
+    try {
+        const skins = await skinModel.find({ rarity: req.params.rarity });
+        if (skins.length === 0) {
+            return res.status(404).json({
+                message: "Aucune skin trouvée pour cette rareté"
+            });
+        }
+        res.status(200).json(skins);
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur lors de la récupération des skins"
+        });
+    }
+});
+
+
+
+
+router.get('/category/:category', authenticateToken, async(req, res) => {
+    try {
+        const skins = await skinModel.find({ Category: req.params.category });
+        if (skins.length === 0) {
+            return res.status(404).json({
+                message: "Aucune skin trouvée pour cette catégorie"
+            });
+        }
+        res.status(200).json(skins);
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur lors de la récupération des skins"
+        });
+    }
+});
+
+
+
+
 
 
 // mise a jour 
@@ -163,21 +202,7 @@ router.post('/', authenticateToken, (req, res, next) => {
 
 
 
-router.get('/category/:category', authenticateToken, async(req, res) => {
-    try {
-        const skins = await skinModel.find({ category: req.params.category });
-        if (skins.length === 0) {
-            return res.status(404).json({
-                message: "Aucune skin trouvée pour cette catégorie"
-            });
-        }
-        res.status(200).json(skins);
-    } catch (error) {
-        res.status(500).json({
-            message: "Erreur lors de la récupération des skins"
-        });
-    }
-});
+
 
 
 
