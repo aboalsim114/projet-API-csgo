@@ -3,6 +3,19 @@ const skinModel = require("../model/skinModel.js")
 const axios = require('axios');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
+
+
+
+
+// limiter les req sur l'api 
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 heure
+    max: 100, // limite de 100 requêtes par fenêtre
+    message: { statusCode: 429, message: 'Vous avez atteint la limite de requêtes pour cette heure. Veuillez réessayer plus tard.' }
+});
+
+
 
 
 
@@ -24,7 +37,7 @@ function isAuthenticated(req, res, next) {
 
 
 
-router.get("/", isAuthenticated, async(req, res) => {
+router.get("/", isAuthenticated, limiter, async(req, res) => {
 
     let skins = await skinModel.find()
     res.status(200).json(skins)
@@ -32,7 +45,7 @@ router.get("/", isAuthenticated, async(req, res) => {
 
 
 // get skin by id
-router.get('/:id', isAuthenticated, async(req, res) => {
+router.get('/:id', isAuthenticated, limiter, async(req, res) => {
     try {
         const skin = await skinModel.findById(req.params.id);
         if (!skin) {
@@ -53,7 +66,7 @@ router.get('/:id', isAuthenticated, async(req, res) => {
 
 
 // get skins by rarity
-router.get('/rarity/:rarity', isAuthenticated, async(req, res) => {
+router.get('/rarity/:rarity', isAuthenticated, limiter, async(req, res) => {
     try {
         const skins = await skinModel.find({ rarity: req.params.rarity });
         if (skins.length === 0) {
@@ -71,7 +84,7 @@ router.get('/rarity/:rarity', isAuthenticated, async(req, res) => {
 
 
 // Route pour rechercher une skin par terme de recherche
-router.get('/search/:term', isAuthenticated, async(req, res) => {
+router.get('/search/:term', isAuthenticated, limiter, async(req, res) => {
     try {
         // Récupérer le terme de recherche depuis les paramètres de la requête
         const term = req.params.term;
@@ -94,7 +107,7 @@ router.get('/search/:term', isAuthenticated, async(req, res) => {
 
 
 // Route pour récupérer les skins pour une équipe donnée
-router.get('/teams/:team', isAuthenticated, async(req, res) => {
+router.get('/teams/:team', isAuthenticated, limiter, async(req, res) => {
     try {
         const skins = await skinModel.find({ Team: req.params.team });
         if (skins.length === 0) {
@@ -112,7 +125,7 @@ router.get('/teams/:team', isAuthenticated, async(req, res) => {
 
 
 
-router.get('/category/:category', isAuthenticated, async(req, res) => {
+router.get('/category/:category', isAuthenticated, limiter, async(req, res) => {
     try {
         const skins = await skinModel.find({ Category: req.params.category });
         if (skins.length === 0) {

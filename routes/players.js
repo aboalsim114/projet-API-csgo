@@ -2,9 +2,15 @@ const express = require('express');
 const axios = require('axios');
 const Player = require('../model/playerModel');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 
 
-
+// limiter les req sur l'api 
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 heure
+    max: 5, // limite de 100 requêtes par fenêtre
+    message: { statusCode: 429, message: 'Vous avez atteint la limite de requêtes pour cette heure. Veuillez réessayer plus tard.' }
+});
 
 
 
@@ -24,7 +30,7 @@ function isAuthenticated(req, res, next) {
 
 
 // Récupérer tous les joueurs
-router.get('/', isAuthenticated, async(req, res) => {
+router.get('/', isAuthenticated, limiter, async(req, res) => {
     try {
         const players = await Player.find();
         res.status(200).json(players);
@@ -34,7 +40,7 @@ router.get('/', isAuthenticated, async(req, res) => {
 });
 
 // Récupérer un joueur par son id
-router.get('/:id', isAuthenticated, async(req, res) => {
+router.get('/:id', isAuthenticated, limiter, async(req, res) => {
     try {
         const player = await Player.findById(req.params.id);
         if (!player) {
@@ -105,7 +111,7 @@ router.delete('/:id', isAuthenticated, async(req, res) => {
 
 
 // Route pour récupérer les joueurs ayant un nom complet contenant un terme de recherche
-router.get('/search/:term', isAuthenticated, async(req, res) => {
+router.get('/search/:term', isAuthenticated, limiter, async(req, res) => {
     try {
         // Récupérer le terme de recherche depuis les paramètres de la requête
         const term = req.params.term;
