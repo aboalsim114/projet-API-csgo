@@ -2,30 +2,26 @@ const express = require('express');
 const axios = require('axios');
 const Player = require('../model/playerModel');
 const router = express.Router();
-const authenticateToken = require('./auth');
 
 
 
-
-
-
-// Route pour la génération de token
-router.post('/login', (req, res) => {
-    // Vérifie si l'utilisateur est autorisé à se connecter
-    if (req.body.username && req.body.password) {
-        // Génère un token d'accès avec une durée de validité de 1 heure
-        const token = jwt.sign({ username: req.body.username }, 'abc1234', { expiresIn: '1h' });
-        res.json({ token: token });
+// Middleware pour vérifier si l'utilisateur est connecté
+function isAuthenticated(req, res, next) {
+    if (req.session.userId) {
+        return next();
     } else {
-        res.status(401).json({ message: 'Identifiants invalides' });
+        return res.status(401).json({ message: 'vous etes pas connecté' });
     }
-});
+}
+
+
+
 
 
 
 
 // Récupérer tous les joueurs
-router.get('/', authenticateToken, async(req, res) => {
+router.get('/', isAuthenticated, async(req, res) => {
     try {
         const players = await Player.find();
         res.status(200).json(players);
@@ -35,7 +31,7 @@ router.get('/', authenticateToken, async(req, res) => {
 });
 
 // Récupérer un joueur par son id
-router.get('/:id', authenticateToken, async(req, res) => {
+router.get('/:id', isAuthenticated, async(req, res) => {
     try {
         const player = await Player.findById(req.params.id);
         if (!player) {
@@ -48,7 +44,7 @@ router.get('/:id', authenticateToken, async(req, res) => {
 });
 
 // Créer un joueur
-router.post('/', authenticateToken, async(req, res) => {
+router.post('/', isAuthenticated, async(req, res) => {
     const player = new Player({
         fullname: req.body.fullname,
         nickname: req.body.nickname,
@@ -67,7 +63,7 @@ router.post('/', authenticateToken, async(req, res) => {
 });
 
 // Mettre à jour un joueur
-router.put('/:id', authenticateToken, async(req, res) => {
+router.put('/:id', isAuthenticated, async(req, res) => {
     try {
         const updatedPlayer = await Player.findByIdAndUpdate(
             req.params.id, {
@@ -89,7 +85,7 @@ router.put('/:id', authenticateToken, async(req, res) => {
 });
 
 // Supprimer un joueur
-router.delete('/:id', authenticateToken, async(req, res) => {
+router.delete('/:id', isAuthenticated, async(req, res) => {
     try {
         const deletedPlayer = await Player.findByIdAndDelete(req.params.id);
         if (!deletedPlayer) {
