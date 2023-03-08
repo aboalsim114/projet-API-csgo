@@ -48,7 +48,7 @@ L'API peut être utilisée en effectuant des requêtes HTTP sur les routes expos
 
 - ` POST /account/login` : connecte un utilisateur
 - ` POST /account/register` : enregistre un nouvel utilisateur
-- ` POST /account/register` : déconnecte un utilisateur
+- ` POST /account/logout` : déconnecte un utilisateur
 
 ## Contributing
 
