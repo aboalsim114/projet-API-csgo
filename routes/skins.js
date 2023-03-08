@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 
 
-
 // Middleware pour vérifier si l'utilisateur est connecté
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
@@ -15,6 +14,12 @@ function isAuthenticated(req, res, next) {
         return res.status(401).json({ message: 'vous etes pas connecté' });
     }
 }
+
+
+
+
+
+
 
 
 
@@ -210,6 +215,8 @@ router.post('/', isAuthenticated, (req, res, next) => {
             next(error);
         });
 });
+
+
 
 
 

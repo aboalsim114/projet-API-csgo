@@ -5,6 +5,9 @@ const router = express.Router();
 
 
 
+
+
+
 // Middleware pour vérifier si l'utilisateur est connecté
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
@@ -96,5 +99,34 @@ router.delete('/:id', isAuthenticated, async(req, res) => {
         res.status(500).json({ message: 'Erreur lors de la suppression du joueur' });
     }
 });
+
+
+
+
+
+// Route pour récupérer les joueurs ayant un nom complet contenant un terme de recherche
+router.get('/search/:term', isAuthenticated, async(req, res) => {
+    try {
+        // Récupérer le terme de recherche depuis les paramètres de la requête
+        const term = req.params.term;
+
+        // Rechercher les joueurs qui correspondent au terme de recherche
+        const players = await Player.find({ fullname: { $regex: term, $options: 'i' } });
+
+        // Vérifier si des joueurs ont été trouvés
+        if (players.length === 0) {
+            return res.status(404).json({ message: `Aucun joueur trouvé pour le terme de recherche "${term}"` });
+        }
+
+        // Retourner les joueurs trouvés
+        res.status(200).json(players);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la recherche de joueurs.' });
+    }
+});
+
+
+
 
 module.exports = router;
