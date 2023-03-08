@@ -21,7 +21,7 @@ Pour exécuter l'API, vous devez installer les éléments suivants :
 
 L'API peut être utilisée en effectuant des requêtes HTTP sur les routes exposées. Il est recommandé d'utiliser un client HTTP comme Postman pour tester les différentes routes.
 
-# skins
+### skins
 
 - ` GET /api/skins` : renvoie toutes les skins
 - `GET /api/skins/:id` : renvoie la skin correspondant à l'ID donné
@@ -33,7 +33,7 @@ L'API peut être utilisée en effectuant des requêtes HTTP sur les routes expos
 
 ---
 
-# Players
+### Players
 
 - ` GET /api/players` : récupère tous les joueurs
 - ` GET /api/players/id` : récupère un joueur par son ID
@@ -41,7 +41,7 @@ L'API peut être utilisée en effectuant des requêtes HTTP sur les routes expos
 - ` PUT /api/players/id` : met à jour un joueur par son ID
 - ` DELETE  /api/players/id` : supprime un joueur par son ID
 
-# Recherche
+### Recherche
 
 - ` GET /api/skins/search/:term` : rechercher des skins en fonction d'un terme de recherche
 
