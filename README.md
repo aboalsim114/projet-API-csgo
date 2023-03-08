@@ -8,6 +8,7 @@ Pour exécuter l'API, vous devez installer les éléments suivants :
 
 - Node.js (v14.17.6 ou plus récent)
 - MongoDB (v5.0.3 ou plus récent)
+- Docker
 
 ## Installation
 
@@ -48,7 +49,7 @@ L'API peut être utilisée en effectuant des requêtes HTTP sur les routes expos
 
 - ` POST /account/login` : connecte un utilisateur
 - ` POST /account/register` : enregistre un nouvel utilisateur
-- ` POST /account/register` : déconnecte un utilisateur
+- ` POST /account/logout` : déconnecte un utilisateur
 
 ## Contributing
 
