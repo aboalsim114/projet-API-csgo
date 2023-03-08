@@ -8,6 +8,7 @@ Pour exécuter l'API, vous devez installer les éléments suivants :
 
 - Node.js (v14.17.6 ou plus récent)
 - MongoDB (v5.0.3 ou plus récent)
+- Docker
 
 ## Installation
 
